@@ -5,7 +5,6 @@ use num::BigInt;
 use num::bigint::RandBigInt;
 use num::bigint::Sign;
 
-#[allow(dead_code)]
 fn sieve(n: u64) -> Vec<u64> { // generate a vec of u64
     let mut primes = vec![2];
 
@@ -20,23 +19,6 @@ fn sieve(n: u64) -> Vec<u64> { // generate a vec of u64
     primes
 }
 
-#[allow(dead_code)]
-fn rnum () -> Vec<u8> {
-    let mut rng = rand::thread_rng();
-    let mut bits = Vec::<u8>::new();
-    for _ in 0..1024 {
-        if rng.gen::<f32>() > 0.5 {
-            bits.push(0);
-        }
-        else {
-            bits.push(1);
-        }
-    }
-    bits[0] = 1;
-    bits[1024-1] = 1;
-    bits
-}
-
 struct BitArray {
     bytes: Vec<u8>,
 }
@@ -44,24 +26,8 @@ impl BitArray {
     fn new_empty() -> BitArray {
         BitArray { bytes: Vec::<u8>::new() }
     }
-    #[allow(dead_code)]
-    fn len(&self) -> usize {
-        self.bytes.len()
-    }
     fn add_byte(&mut self, b: u8) -> () {
         self.bytes.push(b);
-    }
-    #[allow(dead_code)]
-    fn print_bits(&self) -> () {
-        for i in 0..self.bytes.len() {
-            let mut byte: u8 = self.bytes[i];
-            for _ in 0..8 {
-                let ch = if byte % 2 == 0 { '0' } else { '1' };
-                print!("{}", ch);
-                byte /= 2;
-            }
-        }
-        println!();
     }
     fn gen_rand_bits(&mut self, size: u32) {
         let mut rng = rand::thread_rng();
@@ -95,11 +61,6 @@ fn miller_rabin (n: &BigUint, k: u32) -> bool {
         d = d / 2_u32;
         r += 1;
     }
-    // n = 2^r * d + 1
-    //println!("n = {}", n);
-    //println!("n = 2^r * d + 1");
-    //println!("r = {}", r);
-    //println!("d = {}", d);
     assert_eq!(n, &(&d * 2_u32.pow(r) + 1_u32));
     // Witness loop (repeat k times)
     'witness: for _ in 0..k {
@@ -120,11 +81,9 @@ fn miller_rabin (n: &BigUint, k: u32) -> bool {
         }
         return false;
     }
-    // End Witness loop
     true
 }
 
-#[allow(dead_code)]
 fn gen_big_prime(primes: &Vec<u64>) -> BigUint {
     let mut bits = BitArray::new_empty();
     loop {
@@ -142,24 +101,6 @@ fn gen_big_prime(primes: &Vec<u64>) -> BigUint {
             return n;
         }
     }
-}
-
-#[allow(dead_code)]
-fn extended_gcd(a:i64, b:i64) -> (i64, i64, i64) {
-    /* This algorithm can be used to get the
-     * multiplicative inverse of a mod b
-     * if a and b are coprime
-     */
-    let mut s0 = 1; let mut s1 = 0;
-    let mut t0 = 0; let mut t1 = 1;
-    let mut r0 = a; let mut r1 = b;
-    while r1 != 0 {
-        let quotient = r0 / r1;
-        (r0, r1) = (r1, r0 - quotient * r1);
-        (s0, s1) = (s1, s0 - quotient * s1);
-        (t0, t1) = (t1, t0 - quotient * t1);
-    }
-    (r0, s0, t0)
 }
 
 fn mult_inverse_a_mod_b(a_: &BigUint, b_: &BigUint) -> BigUint
