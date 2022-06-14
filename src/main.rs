@@ -176,5 +176,5 @@ fn main() {
         Ok(v) => println!("\nstring decrypted as:\n{}", v),
         Err(e) => panic!("Invalid sequence {}", e),
     };
-
 }
+
